@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Colors = {
@@ -37,6 +37,7 @@ function App() {
   const [color, setColor] = useState(Colors.INACTIVE);
   const [timerStart, setTimerStart] = useState(null);
   const [message, setMessage] = useState("");
+  const ref = useRef();
 
   const handleClick = () => {
     if (color === Colors.INACTIVE) {
@@ -50,6 +51,7 @@ function App() {
   };
 
   const changeColor = () => {
+    ref.current.focus();
     setColor(Colors.ACTIVE);
     setTimerStart(new Date());
   };
@@ -58,6 +60,9 @@ function App() {
     setGameOver(false);
     setColor(Colors.INACTIVE);
   };
+  useEffect(() => {
+    ref.current.focus();
+  }, []);
 
   useEffect(() => {
     if (gameOver) return;
@@ -76,7 +81,14 @@ function App() {
           <h2>{message}</h2>
         </>
       ) : (
-        <Block color={color} onClick={handleClick} />
+        <Block
+          ref={ref}
+          color={color}
+          onClick={handleClick}
+          onKeyDown={handleClick}
+          tabIndex={0}
+          autoFocus
+        />
       )}
     </Flex>
   );
